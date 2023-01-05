@@ -66,7 +66,10 @@ int vtkTexturedSphereSource::RequestData(vtkInformation* vtkNotUsed(request),
   // Set things up; allocate memory
   //
 
+  // TODO: Instead of (phi_R + 1) it should be (phi_R + 2) (two equators).
   numPts = (this->PhiResolution + 1) * (this->ThetaResolution + 1);
+  // TODO: Num of polys increase by theta_R * 2 (i.e., one more band of tris
+  // around the barrel of the cylinder). Or, (phi_R + 1) * 2 * theta_R.
   // creating triangles
   numPolys = this->PhiResolution * 2 * this->ThetaResolution;
 
@@ -95,16 +98,28 @@ int vtkTexturedSphereSource::RequestData(vtkInformation* vtkNotUsed(request),
   // Create sphere
   //
   // Create intermediate points
+  // TODO: We need to make sure that j * deltaPhi (for some integer j) is equal
+  // to pi/2. Hard requirement. Generally, not true for arbitrary PhiResolution.
+  // Define *temporary* PhiResolution:
+  //  PhiResolutionHalf = PhiResolution / 2.
+  //  deltaPhi = (vtkMath::pi() / 2) / PhiResolutionHalf.
+  // The for loop now uses PhiResolutionHalf instead of PhiResolution.
+  //  - the second for loop would actually go from PhiResolutionHalf to 2 * PhiResolutionHalf (so that j * phi works out).
   deltaPhi = vtkMath::Pi() / this->PhiResolution;
   deltaTheta = 2.0 * vtkMath::Pi() / this->ThetaResolution;
   for (i = 0; i <= this->ThetaResolution; i++)
   {
     theta = i * deltaTheta;
     tc[0] = theta / (2.0 * vtkMath::Pi());
+    // TODO:
+    //  1. Loop runs j = 0; <= phi_R / 2.
+    //  2. Start *again* j = phi_R / 2; j <= phi_R.
     for (j = 0; j <= this->PhiResolution; j++)
     {
       phi = j * deltaPhi;
       radius = this->Radius * sin((double)phi);
+      // The capsule is oriented along the y-axis; this sphere is oriented
+      // along the z-axis. So, swap x[1] and x[2] and add +/-L/2 to x[1].
       x[0] = radius * cos((double)theta);
       x[1] = radius * sin((double)theta);
       x[2] = this->Radius * cos((double)phi);
@@ -119,16 +134,21 @@ int vtkTexturedSphereSource::RequestData(vtkInformation* vtkNotUsed(request),
       x[2] /= norm;
       newNormals->InsertNextTuple(x);
 
-      tc[1] = 1.0 - phi / vtkMath::Pi();
+      // TODO: Different!
+      //  - For northern hemisphere: (ϕR) / (πR + L)
+      //  - For southern hemisphere: [L + ϕR] / (πR + L)
+      //  Possibly one minus those quantities if we need to flip the image
+      //  vertically.
+      tc[1] = 1.0 - phi / vtkMath::Pi();  // 1 - x means flipped image.
       newTCoords->InsertNextTuple(tc);
     }
   }
-  //
   // Generate mesh connectivity
   //
   // bands between poles
   for (i = 0; i < this->ThetaResolution; i++)
   {
+    // New bounds are j = 0; j < 2 * PhiResolutionHalf; ++j.
     for (j = 0; j < this->PhiResolution; j++)
     {
       pts[0] = (this->PhiResolution + 1) * i + j;
