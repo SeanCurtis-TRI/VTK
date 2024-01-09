@@ -42,10 +42,12 @@ void vtkLightsPass::Render(const vtkRenderState* s)
 {
   assert("pre: s_exists" && s != nullptr);
 
+  std::cout << "vtkLightsPass::Render\n";
   this->NumberOfRenderedProps = 0;
 
   this->ClearLights(s->GetRenderer());
   this->UpdateLightGeometry(s->GetRenderer());
   this->UpdateLights(s->GetRenderer());
+  std::cout << "vtkLightsPass::Render -- Done\n";
 }
 VTK_ABI_NAMESPACE_END

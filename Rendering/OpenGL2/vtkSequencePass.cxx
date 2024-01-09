@@ -60,6 +60,7 @@ void vtkSequencePass::PrintSelf(ostream& os, vtkIndent indent)
 void vtkSequencePass::Render(const vtkRenderState* s)
 {
   assert("pre: s_exists" && s != nullptr);
+  std::cout << "vtkSequencePass::Render\n";
 
   this->NumberOfRenderedProps = 0;
   if (this->Passes)
@@ -73,6 +74,7 @@ void vtkSequencePass::Render(const vtkRenderState* s)
       p = this->Passes->GetNextRenderPass();
     }
   }
+  std::cout << "vtkSequencePass::Render - Done\n";
 }
 
 //------------------------------------------------------------------------------

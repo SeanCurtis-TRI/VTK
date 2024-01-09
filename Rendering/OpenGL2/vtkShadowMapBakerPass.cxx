@@ -319,6 +319,7 @@ void vtkShadowMapBakerPass::Render(const vtkRenderState* s)
       }
     }
     this->HasShadows = hasOccluder;
+    std::cout << "Shadow map baker pass\n  has light: " << hasLight << "\n  has " << propArrayCount << " occluders: " << hasOccluder << "\n";
     if (!hasOccluder)
     {
       delete[] propArray;
@@ -360,6 +361,7 @@ void vtkShadowMapBakerPass::Render(const vtkRenderState* s)
     bool autoLight = r->GetAutomaticLightCreation() == 1;
     vtkCamera* realCamera = r->GetActiveCamera();
     vtkRenderState s2(r);
+    std::cout << "    Needs upate: " << this->NeedUpdate << "\n";
     if (this->NeedUpdate) // create or re-create the shadow maps.
     {
 #ifdef VTK_SHADOW_MAP_BAKER_PASS_DEBUG
@@ -402,7 +404,7 @@ void vtkShadowMapBakerPass::Render(const vtkRenderState* s)
         }
         l = lights->GetNextItem();
       }
-
+      std::cout << "    Number of shadow lights: " << numberOfShadowLights << "\n";
       if (this->ShadowMaps != nullptr && this->ShadowMaps->size() != numberOfShadowLights)
       {
         delete this->ShadowMaps;
@@ -518,6 +520,7 @@ void vtkShadowMapBakerPass::Render(const vtkRenderState* s)
           this->OpaqueSequence->Render(&s2);
 
           this->NumberOfRenderedProps += this->OpaqueSequence->GetNumberOfRenderedProps();
+          std::cout << "    Light rendered " << this->NumberOfRenderedProps << " props in the opaque pass\n";
 
           if (this->CompositeZPass != nullptr)
           {
@@ -640,6 +643,8 @@ void vtkShadowMapBakerPass::BuildCameraLight(
   {
     assert("pre: cone_angle_is_inf_90" && light->GetConeAngle() < 90.0);
 
+    std::cout << "    camera for spot light!\n";
+
     lcamera->SetParallelProjection(0);
     // view angle is an aperture, but cone (or light) angle is between
     // the axis of the cone and a ray along the edge of the cone.
@@ -654,11 +659,13 @@ void vtkShadowMapBakerPass::BuildCameraLight(
     {
       mFar = 2.0 * mNearmin;
     }
+    std::cout << "      camera clipping range: [" << mNear << ", " << mFar << "]\n";
     lcamera->SetClippingRange(mNear, mFar);
   }
   else
   {
     lcamera->SetParallelProjection(1);
+    std::cout << "    camera for directional light!\n";
 
     double minx, maxx, miny, maxy, minz, maxz;
     double orig[3] = { 0, 0, 0 };

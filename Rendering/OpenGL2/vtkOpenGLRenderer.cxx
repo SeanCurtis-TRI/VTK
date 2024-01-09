@@ -137,6 +137,8 @@ int vtkOpenGLRenderer::UpdateLights()
     lightingComplexity = 1;
   }
 
+  std::cout << "vtkOpenGLRenderer reports " << lightingComplexity << " lighting complexity on " << lightingCount << " lights\n";
+
   // create alight if needed
   if (!lightingCount)
   {
@@ -208,9 +210,10 @@ int vtkOpenGLRenderer::UpdateLights()
                    << i
                    << ";\n"
                       "uniform int lightPositional"
-                   << i << ";";
+                   << i << ";\n";
         }
         this->LightingDeclaration = toString.str();
+        std::cout << "Lights have the following declaration:\n" << this->LightingDeclaration << "\n";
         break;
     }
   }

@@ -200,11 +200,14 @@ void vtkShadowMapPass::Render(const vtkRenderState* s)
 
     this->ShadowTransforms.clear();
     shadowingLightIndex = 0;
+    std::cout << "Shdadow map pass render traversing lights\n";
     for (lights->InitTraversal(), light = lights->GetNextItem(), lightIndex = 0; light != nullptr;
          light = lights->GetNextItem(), lightIndex++)
     {
+      std::cout << "   testing light " << lightIndex << "\n";
       if (this->ShadowTextureUnits[lightIndex] >= 0)
       {
+        std::cout << "      Has valid shadow texture unit\n";
         vtkCamera* lightCamera =
           (*this->ShadowMapBakerPass->GetLightCameras())[static_cast<size_t>(shadowingLightIndex)];
         transform->Push();
@@ -349,12 +352,23 @@ bool vtkShadowMapPass::PostReplaceShaderValues(
     toString4 << "specular += (sf * factor" << i << ".r * lightColor" << i << ");";
     vtkShaderProgram::Substitute(fragmentShader, toString3.str(), toString4.str(), false);
 
-    // for PBR
+    // for PBR - there are two versions. For lightComplexity 1 & 2 attenuation
+    // isn't included. For lightComplexity 3, it is. So, we need to substitute
+    // for both.
     std::ostringstream toString5;
     std::ostringstream toString6;
     toString5 << "radiance = lightColor" << i << ";";
     toString6 << "radiance = factor" << i << ".r * lightColor" << i << ";";
-    vtkShaderProgram::Substitute(fragmentShader, toString5.str(), toString6.str(), false);
+    const bool one = vtkShaderProgram::Substitute(fragmentShader, toString5.str(), toString6.str(), false);
+
+    std::ostringstream toString7;
+    std::ostringstream toString8;
+    toString7 << "radiance = lightColor" << i << " * attenuation;";
+    toString8 << "radiance = factor" << i << ".r * lightColor" << i << " * attenuation;";
+    const bool two = vtkShaderProgram::Substitute(fragmentShader, toString7.str(), toString8.str(), false);
+    if (!(one || two)) {
+      throw std::runtime_error("No PBR updates!");
+    }
   }
   return true;
 }
@@ -460,6 +474,7 @@ void vtkShadowMapPass::BuildShaderCode()
 
   // compute the factors then do the normal lighting
   toString << "//VTK::Light::Impl\n";
+  std::cout << "\n\nShadow map fragment program\n" << fdec << "\n" << toString.str() << "\n\n";
   this->FragmentDeclaration = fdec;
   this->FragmentImplementation = toString.str();
 }

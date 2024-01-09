@@ -51,6 +51,7 @@
 #include "vtkRenderingCoreModule.h" // For export macro
 #include "vtkSmartPointer.h"        // needed for vtkSmartPointer.
 #include "vtkSystemIncludes.h"      // For VTK_COLOR_MODE_DEFAULT and _MAP_SCALARS
+#include <string>
 #include <vector>                   // for method args
 
 #define VTK_RESOLVE_OFF 0
@@ -84,6 +85,8 @@ class VTKRENDERINGCORE_EXPORT vtkMapper : public vtkAbstractMapper3D
 public:
   vtkTypeMacro(vtkMapper, vtkAbstractMapper3D);
   void PrintSelf(ostream& os, vtkIndent indent) override;
+
+  std::string DrakeName{"unnamed"};
 
   /**
    * Make a shallow copy of this mapper.

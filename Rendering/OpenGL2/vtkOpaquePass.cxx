@@ -40,7 +40,9 @@ void vtkOpaquePass::Render(const vtkRenderState* s)
 {
   assert("pre: s_exists" && s != nullptr);
 
+  std::cout << "vtkOpaquePass::Render\n";
   this->NumberOfRenderedProps = 0;
   this->RenderFilteredOpaqueGeometry(s);
+  std::cout << "vtkOpaquePass::Render - DOne\n";
 }
 VTK_ABI_NAMESPACE_END

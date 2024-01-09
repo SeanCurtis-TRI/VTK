@@ -1060,10 +1060,12 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
   // get Standard Lighting Decls
   vtkShaderProgram::Substitute(
     FSSource, "//VTK::Light::Dec", static_cast<vtkOpenGLRenderer*>(ren)->GetLightingUniforms());
-
+ 
+  std::cout << "vtkOpenGlPOlyDataMapper doing fragment with complexity " << lastLightComplexity << "\n";
   switch (lastLightComplexity)
   {
     case 0: // no lighting or RENDER_VALUES
+      
       vtkShaderProgram::Substitute(FSSource, "//VTK::Light::Impl",
         "  gl_FragData[0] = vec4(ambientColor + diffuseColor, opacity);\n"
         "  //VTK::Light::Impl\n",
@@ -1086,6 +1088,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
           toString << "specular = SpecularIsotropic(NdV, NdV, NdV, 1.0, roughness, F0, F90, F);\n";
         }
         toString << "  diffuse = (1.0 - metallic) * (1.0 - F) * DiffuseLambert(albedo);\n"
+                    "  // lightComplexity 1\n"
                     "  radiance = lightColor0;\n";
 
         if (hasClearCoat)
@@ -1129,6 +1132,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
                       "  HdL = clamp(dot(H, L), 1e-5, 1.0);\n"
                       "  NdL = clamp(dot(N, L), 1e-5, 1.0);\n"
                       "  NdH = clamp(dot(N, H), 1e-5, 1.0);\n"
+                      "  // lightComplexity 2\n"
                       "  radiance = lightColor"
                    << i << ";\n";
 
@@ -1200,6 +1204,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
 
       if (actor->GetProperty()->GetInterpolation() == VTK_PBR)
       {
+        std::cout << "   PolyDataMapper has complexity 3 with PBR interpolation\n";
         for (int i = 0; i < lastLightCount; ++i)
         {
           toString << "  if (lightPositional" << i << " == 0) {\n"
@@ -1273,6 +1278,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
       }
       else
       {
+        std::cout << "   PolyDataMapper has complexity 3 with PHONG interpolation\n";
         toString << "  vec3 diffuse = vec3(0,0,0);\n"
                     "  vec3 specular = vec3(0,0,0);\n"
                     "  vec3 vertLightDirectionVC;\n"
@@ -1402,6 +1408,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
     }
   }
 
+  std::cout << "Fragment shader\n" << FSSource << "\n";
   shaders[vtkShader::Fragment]->SetSource(FSSource);
 }
 
@@ -3498,6 +3505,7 @@ void vtkOpenGLPolyDataMapper::RenderPiece(vtkRenderer* ren, vtkActor* actor)
     return;
   }
 
+  std::cout << "Rendering drake name: " << this->DrakeName << "\n";
   this->ResourceCallback->RegisterGraphicsResources(
     static_cast<vtkOpenGLRenderWindow*>(ren->GetRenderWindow()));
 

@@ -325,6 +325,7 @@ void vtkMapper::ShallowCopy(vtkAbstractMapper* mapper)
   vtkMapper* m = vtkMapper::SafeDownCast(mapper);
   if (m != nullptr)
   {
+    this->DrakeName = m->DrakeName;
     this->SetLookupTable(m->GetLookupTable());
     this->SetScalarVisibility(m->GetScalarVisibility());
     this->SetScalarRange(m->GetScalarRange());
