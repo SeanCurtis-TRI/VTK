@@ -106,6 +106,21 @@ public:
   vtkGetMacro(Resolution, unsigned int);
   ///@}
 
+  ///@{
+  /**
+   * Set/Get the exponential constant for the Exponential Shadow Maps. The
+   * default value is that recommended by the authors of the Exponential
+   * Shadow Map paper: 80. This represents the maximum practical value for
+   * 32-bit floating point precision in the shadow map. Values that are too
+   * small will lead to "light leaking" (where shadows get attenuated away from
+   * the light source). Larger values will cause shadows near the light to
+   * disappear.
+   */
+  vtkSetMacro(ExponentialConstant, float);
+  vtkGetMacro(ExponentialConstant, float);
+  ///@}
+  
+
   /**
    * INTERNAL USE ONLY.
    * Internally used by vtkShadowMapBakerPass and vtkShadowMapPass.
@@ -212,6 +227,7 @@ protected:
   vtkRenderPass* CompositeZPass;
 
   unsigned int Resolution;
+  float ExponentialConstant{80.0f};
 
   bool HasShadows;
 
