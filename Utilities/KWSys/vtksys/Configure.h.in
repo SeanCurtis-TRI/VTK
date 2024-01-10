@@ -39,7 +39,7 @@
 #    define @KWSYS_NAMESPACE@_EXPORT
 #  endif
 #else
-#  define @KWSYS_NAMESPACE@_EXPORT
+#  define @KWSYS_NAMESPACE@_EXPORT __attribute__((visibility("hidden")))
 #endif
 
 /* Enable warnings that are off by default but are useful.  */

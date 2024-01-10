@@ -290,7 +290,7 @@ static char* const regdummyptr = &regdummy;
 /*
  * Utility class for RegularExpression::compile().
  */
-class RegExpCompile
+class __attribute__((visibility("hidden"))) RegExpCompile
 {
 public:
   const char* regparse; // Input-scan pointer.
@@ -841,7 +841,7 @@ void RegExpCompile::regoptail(char* p, const char* val)
 /*
  * Utility class for RegularExpression::find().
  */
-class RegExpFind
+class __attribute__((visibility("hidden"))) RegExpFind
 {
 public:
   const char* reginput;   // String-input pointer.
