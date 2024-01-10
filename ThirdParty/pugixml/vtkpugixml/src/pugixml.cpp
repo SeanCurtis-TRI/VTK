@@ -1089,6 +1089,7 @@ namespace pugi
 	};
 }
 #else
+inline namespace drake_vendor {
 namespace pugi
 {
 	struct xml_attribute_struct
@@ -1129,6 +1130,7 @@ namespace pugi
 		xml_attribute_struct* first_attribute;
 	};
 }
+}  // namespace drake_vendor
 #endif
 
 PUGI__NS_BEGIN
@@ -5067,6 +5069,7 @@ PUGI__NS_BEGIN
 	};
 PUGI__NS_END
 
+inline namespace drake_vendor {
 namespace pugi
 {
 	PUGI__FN xml_writer_file::xml_writer_file(void* file_): file(file_)
@@ -7351,6 +7354,7 @@ namespace pugi
 		return impl::xml_memory::deallocate;
 	}
 }
+} // namespace drake_vendor
 
 #if !defined(PUGIXML_NO_STL) && (defined(_MSC_VER) || defined(__ICC))
 namespace std
@@ -12162,6 +12166,7 @@ PUGI__NS_BEGIN
 	}
 PUGI__NS_END
 
+inline namespace drake_vendor {
 namespace pugi
 {
 #ifndef PUGIXML_NO_EXCEPTIONS
@@ -12944,6 +12949,7 @@ namespace pugi
 		return query.evaluate_node(*this);
 	}
 }
+}  // namespace drake_vendor
 
 #endif
 
