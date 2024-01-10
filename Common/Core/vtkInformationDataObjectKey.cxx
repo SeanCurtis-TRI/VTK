@@ -15,7 +15,7 @@
 #include "vtkInformationDataObjectKey.h"
 
 #if defined(vtkCommonDataModel_ENABLED)
-#include "../DataModel/vtkDataObject.h"
+#include /* ../DataModel/ */ "vtkDataObject.h"
 #endif
 
 //------------------------------------------------------------------------------
