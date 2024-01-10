@@ -86,7 +86,7 @@ public:
   static void ComputeBounds(vtkPoints* pts, const unsigned char* ptUses, double bounds[6]);
   static void ComputeBounds(
     vtkPoints* pts, const std::atomic<unsigned char>* ptUses, double bounds[6]);
-  void ComputeBounds(vtkPoints* pts) { this->ComputeBounds(pts, (unsigned char*)nullptr); }
+  void ComputeBounds(vtkPoints* pts) { this->ComputeBounds(pts, static_cast<unsigned char*>(nullptr)); }
   void ComputeBounds(vtkPoints* pts, unsigned char* ptUses)
   {
     double bds[6];
