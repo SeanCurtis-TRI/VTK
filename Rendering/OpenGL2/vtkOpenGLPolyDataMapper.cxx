@@ -1345,6 +1345,7 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
                     "  gl_FragData[0] = vec4(ambientColor + diffuse + specular, opacity);"
                     "  //VTK::Light::Impl";
       }
+      std::cout << "Light impl\n" << toString.str() << "\n";
       vtkShaderProgram::Substitute(FSSource, "//VTK::Light::Impl", toString.str(), false);
       break;
   }

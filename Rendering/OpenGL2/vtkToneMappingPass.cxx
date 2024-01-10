@@ -77,6 +77,7 @@ void vtkToneMappingPass::PrintSelf(ostream& os, vtkIndent indent)
 //------------------------------------------------------------------------------
 void vtkToneMappingPass::Render(const vtkRenderState* s)
 {
+  std::cout << "vtkToneMappingPass::Render()\n";
   vtkOpenGLClearErrorMacro();
 
   this->NumberOfRenderedProps = 0;
@@ -91,6 +92,7 @@ void vtkToneMappingPass::Render(const vtkRenderState* s)
   if (this->DelegatePass == nullptr)
   {
     vtkWarningMacro("no delegate in vtkToneMappingPass.");
+    std::cout << "vtkToneMappingPass::Render() -- done with warning\n";
     return;
   }
 
@@ -259,6 +261,7 @@ void vtkToneMappingPass::Render(const vtkRenderState* s)
   this->ColorTexture->Deactivate();
 
   vtkOpenGLCheckErrorMacro("failed after Render");
+  std::cout << "vtkToneMappingPass::Render() -- Done\n";
 }
 
 //------------------------------------------------------------------------------

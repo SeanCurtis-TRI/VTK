@@ -382,6 +382,7 @@ void vtkRenderer::Render()
 
   // do the render library specific stuff
   timer->MarkStartEvent("DeviceRender");
+  std::cout << "vtkRenderer::Render() calling DeviceRender()\n";
   this->DeviceRender();
   timer->MarkEndEvent();
 
@@ -501,6 +502,7 @@ vtkTypeBool vtkRenderer::UpdateLightsGeometryToFollowCamera()
   vtkLight* light;
   vtkMatrix4x4* lightMatrix;
 
+  std::cout << "vtkRenderer::UpdateLightsGeometryToFollowCamera()\n";
   // only update the light's geometry if this Renderer is tracking
   // this lights.  That allows one renderer to view the lights that
   // another renderer is setting up.
@@ -508,28 +510,34 @@ vtkTypeBool vtkRenderer::UpdateLightsGeometryToFollowCamera()
   lightMatrix = camera->GetCameraLightTransformMatrix();
 
   vtkCollectionSimpleIterator sit;
+  int i = 0;
   for (this->Lights->InitTraversal(sit); (light = this->Lights->GetNextLight(sit));)
   {
+    std::cout << "  Light " << i << "\n";
     if (light->LightTypeIsSceneLight())
     {
       // Do nothing. Don't reset the transform matrix because applications
       // may have set a custom matrix. Only reset the transform matrix in
       // vtkLight::SetLightTypeToSceneLight()
+      std::cout << "      Scene light\n";
     }
     else if (light->LightTypeIsHeadlight())
     {
       // update position and orientation of light to match camera.
       light->SetPosition(camera->GetPosition());
       light->SetFocalPoint(camera->GetFocalPoint());
+      std::cout << "      Head light\n";
     }
     else if (light->LightTypeIsCameraLight())
     {
       light->SetTransformMatrix(lightMatrix);
+      std::cout << "      Camera light\n";
     }
     else
     {
       vtkErrorMacro(<< "light has unknown light type");
     }
+    light->PrintSelf(std::cout, vtkIndent(3));
   }
   return 1;
 }

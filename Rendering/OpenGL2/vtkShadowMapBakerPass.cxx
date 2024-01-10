@@ -474,10 +474,13 @@ void vtkShadowMapBakerPass::Render(const vtkRenderState* s)
       // Setup property keys for actors:
       this->PreRender(s);
 
+      std::cout << "Shadow map baker iterating through lights\n";
       while (l != nullptr)
       {
+        std::cout << "  Light: " << static_cast<void*>(l) << "\n";
         if (l->GetSwitch() && this->LightCreatesShadow(l))
         {
+          std::cout << "    on and creates shadows\n";
           vtkTextureObject* map = (*this->ShadowMaps)[this->CurrentLightIndex];
           if (map == nullptr)
           {
@@ -622,6 +625,7 @@ bool vtkShadowMapBakerPass::PreReplaceShaderValues(
 void vtkShadowMapBakerPass::BuildCameraLight(
   vtkLight* light, double* boundingBox, vtkCamera* lcamera)
 {
+  std::cout << "BuildCameraLight: " << static_cast<void*>(light) << "\n";
   assert("pre: light_exists" && light != nullptr);
   assert("pre: camera_exists" && lcamera != nullptr);
 
@@ -643,7 +647,7 @@ void vtkShadowMapBakerPass::BuildCameraLight(
   {
     assert("pre: cone_angle_is_inf_90" && light->GetConeAngle() < 90.0);
 
-    std::cout << "    camera for spot light!\n";
+    std::cout << "    camera for spot light: " << static_cast<void*>(light) << "\n";
 
     lcamera->SetParallelProjection(0);
     // view angle is an aperture, but cone (or light) angle is between
@@ -665,7 +669,7 @@ void vtkShadowMapBakerPass::BuildCameraLight(
   else
   {
     lcamera->SetParallelProjection(1);
-    std::cout << "    camera for directional light!\n";
+    std::cout << "    camera for directional light: " << static_cast<void*>(light) << "\n";
 
     double minx, maxx, miny, maxy, minz, maxz;
     double orig[3] = { 0, 0, 0 };

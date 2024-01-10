@@ -239,11 +239,14 @@ int vtkOpenGLRenderer::GetDepthPeelingHigherLayer()
 void vtkOpenGLRenderer::DeviceRender()
 {
   vtkTimerLog::MarkStartEvent("OpenGL Dev Render");
+  std::cout << "VtkOpenGlRenderer::DeviceRender()\n";
 
   bool computeIBLTextures = !(this->Pass && this->Pass->IsA("vtkOSPRayPass")) &&
     this->UseImageBasedLighting && this->EnvironmentTexture;
   if (computeIBLTextures)
   {
+
+    std::cout << "   VtkOpenGlRenderer::DeviceRender() - computing IBL textures\n";
     this->GetEnvMapLookupTable()->Load(this);
     this->GetEnvMapPrefiltered()->Load(this);
 
@@ -282,6 +285,7 @@ void vtkOpenGLRenderer::DeviceRender()
 
   if (this->Pass != nullptr)
   {
+    std::cout << "   VtkOpenGlRenderer::DeviceRender() - calling render pass\n";
     vtkRenderState s(this);
     s.SetPropArrayAndCount(this->PropArray, this->PropArrayCount);
     s.SetFrameBuffer(nullptr);
@@ -293,6 +297,7 @@ void vtkOpenGLRenderer::DeviceRender()
     // some objects which get executed during a pipeline update,
     // other windows might get rendered since the last time
     // a MakeCurrent was called.
+    std::cout << "   VtkOpenGlRenderer::DeviceRender() - built-in render pipeline\n";
     this->RenderWindow->MakeCurrent();
     vtkOpenGLClearErrorMacro();
 
@@ -311,6 +316,7 @@ void vtkOpenGLRenderer::DeviceRender()
     this->GetEnvMapPrefiltered()->PostRender(this);
   }
 
+  std::cout << "   VtkOpenGlRenderer::DeviceRender() - DONE!\n";
   vtkTimerLog::MarkEndEvent("OpenGL Dev Render");
 }
 
@@ -1058,6 +1064,8 @@ void vtkOpenGLRenderer::UpdateLightingUniforms(vtkShaderProgram* program)
           lightDirection[2] = tDirView[2];
         }
 
+        std::cout << "Light direction uniform: " << lightDirection[0]
+                  << ", " << lightDirection[1] << ", " << lightDirection[2] << "\n";
         program->SetUniform3f((ldir + count).c_str(), lightDirection);
 
         // we are done unless we have positional lights
@@ -1086,6 +1094,8 @@ void vtkOpenGLRenderer::UpdateLightingUniforms(vtkShaderProgram* program)
             lightPosition[2] = tlpView[2];
           }
 
+        std::cout << "Light position uniform: " << lightPosition[0]
+                  << ", " << lightPosition[1] << ", " << lightPosition[2] << "\n";
           program->SetUniform3f((latten + count).c_str(), lightAttenuation);
           program->SetUniformi((lpositional + count).c_str(), light->GetPositional());
           program->SetUniform3f((lpos + count).c_str(), lightPosition);
