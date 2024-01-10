@@ -19,6 +19,11 @@
 #include VTK_DOUBLECONVERSION_HEADER(double-conversion.h)
 // clang-format on
 
+#undef double_conversion
+namespace double_conversion {
+using namespace drake_vendor_double_conversion;
+}
+
 #include <sstream>
 
 VTK_ABI_NAMESPACE_BEGIN

@@ -31,7 +31,7 @@
 // XXX(kitware): // include exports header
 #include "vtkdoubleconversion_export.h"
 // mangle the double_conversion namespace
-#define double_conversion vtkdouble_conversion
+#define double_conversion drake_vendor_double_conversion __attribute__((visibility("hidden")))
 
 #include <cstdlib>
 #include <cstring>
