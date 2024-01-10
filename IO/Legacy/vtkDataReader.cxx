@@ -877,7 +877,7 @@ int vtkDataReader::ReadCellData(vtkDataSet* ds, vtkIdType numCells)
 // no geometry was defined).
 int vtkDataReader::ReadPointData(vtkDataSet* ds, vtkIdType numPts)
 {
-  char line[256];
+  char line[256] = "";
   vtkDataSetAttributes* a = ds->GetPointData();
 
   vtkDebugMacro(<< "Reading vtk point data");
@@ -2215,7 +2215,7 @@ int vtkDataReader::ReadCoordinates(vtkRectilinearGrid* rg, int axes, int numCoor
 // Read scalar point attributes. Return 0 if error.
 int vtkDataReader::ReadScalarData(vtkDataSetAttributes* a, vtkIdType numPts)
 {
-  char line[256], name[256], key[256], tableName[256];
+  char line[256], name[256], key[256] = "", tableName[256];
   int skipScalar = 0;
   vtkDataArray* data;
   int numComp = 1;
