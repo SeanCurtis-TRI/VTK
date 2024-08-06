@@ -1245,46 +1245,23 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
       {
         for (int i = 0; i < lastLightCount; ++i)
         {
-          toString << "  L = lightPositionVC" << i
-                   << " - vertexVC.xyz;\n"
-                      "  distanceVC = length(L);\n"
-                      "  L = normalize(L);\n"
-                      "  H = normalize(V + L);\n"
-                      "  NdL = clamp(dot(N, L), 1e-5, 1.0);\n"
-                      "  NdH = clamp(dot(N, H), 1e-5, 1.0);\n"
-                      "  HdL = clamp(dot(H, L), 1e-5, 1.0);\n"
-                      "  if (lightPositional"
-                   << i
-                   << " == 0)\n"
-                      "  {\n"
+          toString << "  if (lightPositional" << i << " == 0) {\n"
                       "    attenuation = 1.0;\n"
-                      "  }\n"
-                      "  else\n"
-                      "  {\n"
-                      "    attenuation = 1.0 / (lightAttenuation"
-                   << i
-                   << ".x\n"
-                      "      + lightAttenuation"
-                   << i
-                   << ".y * distanceVC\n"
-                      "      + lightAttenuation"
-                   << i
-                   << ".z * distanceVC * distanceVC);\n"
+                      "    L = -lightDirectionVC" << i << ";\n"
+                      "  } else {\n"
+                      "    L = lightPositionVC" << i << " - vertexVC.xyz;\n"
+                      "    distanceVC = length(L);\n"
+                      "    L = normalize(L);\n"
+                      "    attenuation = 1.0 / (lightAttenuation" << i << ".x\n"
+                      "      + lightAttenuation" << i << ".y * distanceVC\n"
+                      "      + lightAttenuation" << i << ".z * distanceVC * distanceVC);\n"
                       "    // cone angle is less than 90 for a spot light\n"
-                      "    if (lightConeAngle"
-                   << i
-                   << " < 90.0) {\n"
-                      "      float coneDot = dot(-L, lightDirectionVC"
-                   << i
-                   << ");\n"
+                      "    if (lightConeAngle" << i << " < 90.0) {\n"
+                      "      float coneDot = dot(-L, lightDirectionVC" << i << ");\n"
                       "      // if inside the cone\n"
-                      "      if (coneDot >= cos(radians(lightConeAngle"
-                   << i
-                   << ")))\n"
+                      "      if (coneDot >= cos(radians(lightConeAngle" << i << ")))\n"
                       "      {\n"
-                      "        attenuation = attenuation * pow(coneDot, lightExponent"
-                   << i
-                   << ");\n"
+                      "        attenuation = attenuation * pow(coneDot, lightExponent" << i << ");\n"
                       "      }\n"
                       "      else\n"
                       "      {\n"
@@ -1292,8 +1269,14 @@ void vtkOpenGLPolyDataMapper::ReplaceShaderLight(
                       "      }\n"
                       "    }\n"
                       "  }\n"
-                      "  radiance = lightColor"
-                   << i << " * attenuation;\n";
+                      "  H = normalize(V + L);\n"
+                      "  NdL = clamp(dot(N, L), 1e-5, 1.0);\n"
+                      "  NdH = clamp(dot(N, H), 1e-5, 1.0);\n"
+                      "  HdL = clamp(dot(H, L), 1e-5, 1.0);\n"
+                      // Don't change this definition of radiance; vtkShadowMapPass
+                      // uses it to inject shadows.
+                      "  radiance = lightColor" << i << ";\n"
+                      "  radiance *= attenuation;\n";
 
           if (hasAnisotropy)
           {

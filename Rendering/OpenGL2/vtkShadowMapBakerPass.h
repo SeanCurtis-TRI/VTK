@@ -218,7 +218,7 @@ protected:
   vtkRenderPass* CompositeZPass;
 
   unsigned int Resolution;
-  float ExponentialConstant{ 11.0f };
+  float ExponentialConstant{ 80.0f };
 
   bool HasShadows;
 
