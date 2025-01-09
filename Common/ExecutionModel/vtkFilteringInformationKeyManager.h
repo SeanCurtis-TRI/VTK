@@ -26,11 +26,13 @@
 VTK_ABI_NAMESPACE_BEGIN
 class vtkInformationKey;
 
+// All functions in this class are stubbed out to be no-ops for Drake.
+// The Drake build & release posture does not permit static destructors.
 class VTKCOMMONEXECUTIONMODEL_EXPORT vtkFilteringInformationKeyManager
 {
 public:
-  vtkFilteringInformationKeyManager();
-  ~vtkFilteringInformationKeyManager();
+  vtkFilteringInformationKeyManager() = default;
+  ~vtkFilteringInformationKeyManager() = default;
 
   /**
    * Called by constructors of vtkInformationKey subclasses defined in
@@ -38,7 +40,7 @@ public:
    * instances will be deleted when vtkFiltering is unloaded on
    * program exit.
    */
-  static void Register(vtkInformationKey* key);
+  static void Register(vtkInformationKey*) {}
 
   /// Ensure that \a finalizer is invoked before ClassFinalizer() runs.
   ///
@@ -46,24 +48,21 @@ public:
   /// vtkObjectBase) for its duration, then adding \a finalizer function that frees
   /// them will prevent this class's static ClassFinalizer() method from freeing
   /// keys that may be in use.
-  static void AddFinalizer(std::function<void()> finalizer);
+  static void AddFinalizer(std::function<void()>) {}
 
 private:
   // Unimplemented
   vtkFilteringInformationKeyManager(const vtkFilteringInformationKeyManager&) = delete;
   vtkFilteringInformationKeyManager& operator=(const vtkFilteringInformationKeyManager&) = delete;
-
-  static void ClassInitialize();
-  static void ClassFinalize();
-
-  static std::vector<std::function<void()>>* Finalizers;
 };
 
+#if 0  // The Drake build & release posture does not permit static destructors.
 // This instance will show up in any translation unit that uses key
 // types defined in vtkFiltering or that has a singleton.  It will
 // make sure vtkFilteringInformationKeyManager's vector of keys is
 // initialized before and destroyed after it is used.
 static vtkFilteringInformationKeyManager vtkFilteringInformationKeyManagerInstance;
+#endif
 
 VTK_ABI_NAMESPACE_END
 #endif
