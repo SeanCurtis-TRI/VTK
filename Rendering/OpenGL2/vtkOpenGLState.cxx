@@ -526,8 +526,10 @@ void vtkOpenGLState::vtkglDrawBuffer(unsigned int val)
     // todo get rid of the && and make this always an error if FO is set
     vtkGenericWarningMacro(
       "A vtkOpenGLFramebufferObject is currently bound but a hardware draw buffer was requested.");
+#if 0
     std::string msg = vtksys::SystemInformation::GetProgramStack(0, 0);
     vtkGenericWarningMacro("at stack loc\n" << msg);
+#endif
   }
 
 #ifndef NO_CACHE
