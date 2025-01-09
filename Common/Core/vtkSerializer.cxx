@@ -120,8 +120,10 @@ vtkSerializer::HandlerType vtkSerializer::GetHandler(const std::type_info& type)
        "{ .name="
     << type.name() << " .hashCode=" << type.hash_code()
     << " }"
-       " because a serializer was not found. Check stack trace to see how we got here.");
+       " because a serializer was not found.");
+#if 0
   vtkWarningMacro(<< vtksys::SystemInformation::GetProgramStack(2, 1));
+#endif
   return nullptr;
 }
 

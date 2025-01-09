@@ -197,8 +197,10 @@ vtkDeserializer::ConstructorType vtkDeserializer::GetConstructor(
     name = superClassNames[--superClassId];
   } while (superClassId > 0);
   vtkErrorMacro(<< "There is no constructor registered for type " << className
-                << ". Check stack trace to see how we got here.");
+                << ".");
+#if 0
   vtkWarningMacro(<< vtksys::SystemInformation::GetProgramStack(2, 1));
+#endif
   return nullptr;
 }
 
@@ -232,8 +234,10 @@ vtkDeserializer::HandlerType vtkDeserializer::GetHandler(const std::type_info& t
        "{ .name="
     << type.name() << " .hashCode=" << type.hash_code()
     << " }"
-       " because a deserializer was not found. Check stack trace to see how we got here.");
+       " because a deserializer was not found.");
+#if 0
   vtkWarningMacro(<< vtksys::SystemInformation::GetProgramStack(2, 1));
+#endif
   return nullptr;
 }
 
