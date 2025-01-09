@@ -144,6 +144,7 @@
 #	define PUGIXML_CHAR char
 #endif
 
+inline namespace drake_vendor {
 namespace pugi
 {
 	// Character type used for all internal storage and operations; depends on PUGIXML_WCHAR_MODE
@@ -1473,6 +1474,7 @@ namespace pugi
 	allocation_function PUGIXML_FUNCTION get_memory_allocation_function();
 	deallocation_function PUGIXML_FUNCTION get_memory_deallocation_function();
 }
+}  // namespace drake_vendor
 
 #if !defined(PUGIXML_NO_STL) && (defined(_MSC_VER) || defined(__ICC))
 namespace std
