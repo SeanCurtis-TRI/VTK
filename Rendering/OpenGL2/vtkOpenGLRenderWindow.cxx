@@ -612,6 +612,13 @@ vtkOpenGLRenderWindow::~vtkOpenGLRenderWindow()
 //------------------------------------------------------------------------------
 vtkOpenGLRenderWindow* vtkOpenGLRenderWindow::New()
 {
+  // This function is too unreliable for Drake's purposes, so we'll nix it.
+  throw std::runtime_error("Internal error: Drake must not use vtkOpenGLRenderWindow::New()");
+}
+#endif
+#if 0
+vtkOpenGLRenderWindow* vtkOpenGLRenderWindow::New()
+{
   const char* backend = std::getenv("VTK_DEFAULT_OPENGL_WINDOW");
 #if defined(_WIN32)
   if ((backend == nullptr) || (std::string(backend) == "vtkWin32OpenGLRenderWindow"))
