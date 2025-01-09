@@ -997,15 +997,25 @@ bool vtkGLTFDocumentLoader::LoadModelData(const std::vector<char>& glbBuffer)
     this->InvokeEvent(vtkCommand::ProgressEvent, static_cast<void*>(&progress));
   }
   // Read additional buffer data
-  if (!this->LoadAnimationData())
+  if (config_.include_animation)
   {
-    return false;
+    if (!this->LoadAnimationData())
+    {
+      return false;
+    }
   }
-  if (!this->LoadImageData())
+  if (config_.include_images)
   {
-    return false;
+    if (!this->LoadImageData())
+    {
+      return false;
+    }
   }
-  return this->LoadSkinMatrixData();
+  if (config_.include_skins)
+  {
+    return this->LoadSkinMatrixData();
+  }
+  return true;
 }
 
 /** vtk object building and animation operations **/

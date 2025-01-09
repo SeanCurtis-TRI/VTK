@@ -54,6 +54,13 @@ public:
   vtkTypeMacro(vtkGLTFDocumentLoader, vtkObject);
   void PrintSelf(ostream& os, vtkIndent indent) override;
 
+  // Controls the configuration of what gets loaded.
+  struct Config {
+    bool include_animation{true};
+    bool include_images{true};
+    bool include_skins{true};
+  };
+
   /**
    * Define an openGL draw target.
    */
@@ -615,6 +622,9 @@ public:
   vtkGetMacro(GLBStart, vtkTypeInt64);
   ///@}
 
+  void SetConfig(const Config& config) { config_ = config; }
+  const Config& GetConfig() const { return config_; }
+
 protected:
   vtkGLTFDocumentLoader() = default;
   ~vtkGLTFDocumentLoader() override = default;
@@ -671,6 +681,7 @@ private:
   bool LoadImageData();
 
   std::shared_ptr<Model> InternalModel;
+  Config config_;
 
   static const std::vector<std::string> SupportedExtensions;
   std::vector<std::string> UsedExtensions;
