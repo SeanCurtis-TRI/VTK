@@ -204,7 +204,7 @@ public:
   virtual void ShallowCopy(vtkCellAttribute* other, bool copyArrays = true);
   virtual void DeepCopy(vtkCellAttribute* other,
     const std::map<vtkAbstractArray*, vtkAbstractArray*>& arrayRewrites = {});
-
+#if 0  // DRAKE OMITTING THIS API
   /// Given a space string (e.g., ℝ³⁻ or ℚ¹), decode the base (e.g., ℝ resp. ℚ),
   /// exponent (e.g., 3 resp. 1), and halfspace indicator (-1 resp. 0).
   ///
@@ -220,7 +220,7 @@ public:
 
   /// Return a space string given a description of it via \a base, \a exp, and \a halfspace.
   static std::string EncodeSpace(const std::string& base, unsigned int, int halfspace = 0);
-
+#endif  // DRAKE OMITTING THIS API
 protected:
   vtkCellAttribute() = default;
   ~vtkCellAttribute() override = default;

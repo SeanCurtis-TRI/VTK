@@ -5,8 +5,6 @@
 #include "vtkAbstractArray.h"
 #include "vtkObjectFactory.h"
 
-#include <vtk_pegtl.h>
-
 #include <sstream>
 
 VTK_ABI_NAMESPACE_BEGIN
@@ -258,6 +256,7 @@ void vtkCellAttribute::DeepCopy(
   }
 }
 
+#if 0  // DRAKE OMITTING THIS API
 namespace
 {
 using namespace tao::pegtl;
@@ -638,5 +637,5 @@ std::string vtkCellAttribute::EncodeSpace(const std::string& base, unsigned int 
   }
   return result.str();
 }
-
+#endif  // DRAKE OMITTING THIS API
 VTK_ABI_NAMESPACE_END
