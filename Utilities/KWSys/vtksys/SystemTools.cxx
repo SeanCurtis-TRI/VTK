@@ -475,7 +475,7 @@ struct kwsysEnvCompare
   }
 };
 
-class kwsysEnvSet : public std::set<const envchar*, kwsysEnvCompare>
+class __attribute__((visibility("hidden"))) kwsysEnvSet : public std::set<const envchar*, kwsysEnvCompare>
 {
 public:
   class Free
@@ -524,7 +524,7 @@ struct SystemToolsPathCaseCmp
 /**
  * SystemTools static variables singleton class.
  */
-class SystemToolsStatic
+class __attribute__((visibility("hidden"))) SystemToolsStatic
 {
 public:
   using StringMap = std::map<std::string, std::string>;

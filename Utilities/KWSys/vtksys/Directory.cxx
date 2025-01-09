@@ -36,7 +36,7 @@
 
 namespace KWSYS_NAMESPACE {
 
-class DirectoryInternals
+class __attribute__((visibility("hidden"))) DirectoryInternals
 {
 public:
   struct FileData

@@ -266,7 +266,7 @@ using SigAction = void (*)(int, siginfo_t*, void*);
 //  Define SystemInformationImplementation class
 using DELAY_FUNC = void (*)(unsigned int);
 
-class SystemInformationImplementation
+class __attribute__((visibility("hidden"))) SystemInformationImplementation
 {
 public:
   SystemInformationImplementation();
@@ -1202,7 +1202,7 @@ void StacktraceSignalHandler(int sigNo, siginfo_t* sigInfo,
 // Description:
 // A container for symbol properties. Each instance
 // must be Initialized.
-class SymbolProperties
+class __attribute__((visibility("hidden"))) SymbolProperties
 {
 public:
   SymbolProperties();
