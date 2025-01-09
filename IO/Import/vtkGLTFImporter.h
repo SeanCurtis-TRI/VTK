@@ -51,7 +51,9 @@
 
 #include "vtkIOImportModule.h" // For export macro
 #include "vtkImporter.h"
+#include "vtkResourceStream.h"
 #include "vtkSmartPointer.h" // For SmartPointer
+#include "vtkURILoader.h"
 
 #include <map>    // For map
 #include <vector> // For vector
@@ -77,6 +79,23 @@ public:
   vtkSetFilePathMacro(FileName);
   vtkGetFilePathMacro(FileName);
   ///@}
+
+  /**
+   * Sets the glTF source from a stream. If the stream and filename are set, the
+   * FileName is ignored. If a stream is provided, the `uri_loader` must be
+   * capable of resolving URIs. Note: if the stream contains only data URIs, no
+   * a default vtkUriLoader is sufficient.
+   * 
+   * Setting both `stream` and `uri_loader` to null will revert the importer to
+   * use FileName.
+   * 
+   * @param stream      The data stream of the main .gltf/glb file.
+   * @param uri_loader  The loader to resolve non-data URIs in the glTF file.
+   * @param binary      If true, the data stream contains the contents of a .glb
+   *                    file. Value doesn't matter when the other parameters are
+   *                    null.
+   */
+  void SetInputStream(vtkResourceStream* stream, vtkURILoader* uri_loader, bool binary);
 
   /**
    * glTF defines multiple camera objects, but no default behavior for which camera should be
@@ -167,6 +186,9 @@ protected:
   virtual void ApplyArmatureProperties(vtkActor* actor);
 
   char* FileName = nullptr;
+  vtkSmartPointer<vtkResourceStream> FileStream;
+  vtkSmartPointer<vtkURILoader> StreamURILoader;
+  bool StreamIsBinary{};
 
   std::map<int, vtkSmartPointer<vtkCamera>> Cameras;
   std::map<int, vtkSmartPointer<vtkTexture>> Textures;

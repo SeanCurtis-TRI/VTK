@@ -400,12 +400,25 @@ void vtkGLTFImporter::InitializeLoader()
 }
 
 //------------------------------------------------------------------------------
+void vtkGLTFImporter::SetInputStream(vtkResourceStream* stream,
+                                     vtkURILoader* uri_loader, bool binary) {
+  this->FileStream = stream;
+  this->StreamURILoader = uri_loader;
+  this->StreamIsBinary = binary;
+  // Both should be null or not null.
+  if ((this->FileStream == nullptr) != (this->StreamURILoader == nullptr)) {
+    vtkErrorMacro("When setting the input stream, the stream and the uri "
+                  "loader must be set or cleared simultaneously.");
+  }
+}
+
+//------------------------------------------------------------------------------
 int vtkGLTFImporter::ImportBegin()
 {
   // Make sure we have a file to read.
-  if (!this->FileName)
+  if (!this->FileStream && !this->FileName)
   {
-    vtkErrorMacro("A FileName must be specified.");
+    vtkErrorMacro("Neither FileName nor FileStream has been specified.");
     return 0;
   }
 
@@ -422,21 +435,44 @@ int vtkGLTFImporter::ImportBegin()
 
   // Check extension
   std::vector<char> glbBuffer;
-  std::string extension = vtksys::SystemTools::GetFilenameLastExtension(this->FileName);
-  if (extension == ".glb")
+  if (this->FileName != nullptr)
   {
-    if (!this->Loader->LoadFileBuffer(this->FileName, glbBuffer))
+    // this->FileName is defined.
+    std::string extension = vtksys::SystemTools::GetFilenameLastExtension(this->FileName);
+    if (extension == ".glb")
     {
-      vtkErrorMacro("Error loading binary data");
+      if (!this->Loader->LoadFileBuffer(this->FileName, glbBuffer))
+      {
+        vtkErrorMacro("Error loading binary data");
+        return 0;
+      }
+    }
+
+    if (!this->Loader->LoadModelMetaDataFromFile(this->FileName))
+    {
+      vtkErrorMacro("Error loading model metadata");
+      return 0;
+    }
+  }
+  else
+  {
+    // this->FileStream is defined.
+    if (this->StreamIsBinary)
+    {
+      if (!this->Loader->LoadStreamBuffer(this->FileStream, glbBuffer))
+      {
+        vtkErrorMacro("Error loading binary data");
+        return 0;
+      }
+    }
+
+    if (!this->Loader->LoadModelMetaDataFromStream(this->FileStream, this->StreamURILoader))
+    {
+      vtkErrorMacro("Error loading model metadata");
       return 0;
     }
   }
 
-  if (!this->Loader->LoadModelMetaDataFromFile(this->FileName))
-  {
-    vtkErrorMacro("Error loading model metadata");
-    return 0;
-  }
   if (!this->Loader->LoadModelData(glbBuffer))
   {
     vtkErrorMacro("Error loading model data");
@@ -1037,7 +1073,13 @@ bool vtkGLTFImporter::GetTemporalInformation(vtkIdType animationIndex, double fr
 void vtkGLTFImporter::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
-  os << indent << "File Name: " << (this->FileName ? this->FileName : "(none)") << "\n";
+  os << indent;
+  if (this->FileStream != nullptr) {
+    os << "FileStream (" << (this->StreamIsBinary ? "binary" : "ascii") << ")";
+  } else {
+    os << "File Name: " << (this->FileName ? this->FileName : "(none)");
+  }
+  os << "\n";
 }
 
 //------------------------------------------------------------------------------
