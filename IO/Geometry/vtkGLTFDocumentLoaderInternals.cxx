@@ -1480,6 +1480,12 @@ bool vtkGLTFDocumentLoaderInternals::LoadModelMetaData(
     }
   }
 
+  // In case the file had no scenes, add an empty one so that downwind code
+  // doesn't need to check that its DefaultScene index is valid.
+  if (this->Self->GetInternalModel()->Scenes.empty()) {
+    this->Self->GetInternalModel()->Scenes.resize(1);
+  }
+
   // Load skins
   this->Self->GetInternalModel()->Skins.reserve(root["skins"].size());
   for (const auto& glTFSkin : root["skins"])
