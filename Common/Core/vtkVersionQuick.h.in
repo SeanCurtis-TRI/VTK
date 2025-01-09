@@ -7,7 +7,7 @@
 
 #define VTK_MAJOR_VERSION @VTK_MAJOR_VERSION@
 #define VTK_MINOR_VERSION @VTK_MINOR_VERSION@
-#define VTK_EPOCH_VERSION @VTK_EPOCH_VERSION@
+#define VTK_EPOCH_VERSION @VTK_BUILD_VERSION@
 
 #define VTK_VERSION_CHECK(major, minor, build)                                                     \
   (10000000000ULL * major + 100000000ULL * minor + build)

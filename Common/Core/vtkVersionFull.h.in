@@ -5,6 +5,6 @@
 
 /* This is in its own header to reduce build dependencies */
 
-#define VTK_VERSION_FULL "@VTK_VERSION_FULL@"
+#define VTK_VERSION_FULL VTK_VERSION "-drake"
 
 #endif
